@@ -13,14 +13,35 @@ const addData = () => {
     "chaicode"
   ])
 }
+
 useEffect(() => {
-setInterval(()=>{
+const timerId = setInterval(()=>{
   setSeconds((current) => Math.max(current-1 ,0 ))
-})
-  return ()=> {
-                //memory cleanup
+},1000)
+  
+return ()=> {
+    clearInterval(timerId) //memory cleanup
   }
+
 }, [])
+
+useEffect(()=>{
+  const controller = new AbortController()
+
+  async function loadPost(){
+   try{
+     setStatus("Loading")
+    const response = await fetch('https://jsonplaceholder.typicode.com/todos/1')
+    const data = await response.json
+    setPosts(data)
+    console.log(data)
+    setStatus("Success")
+   } catch(e){
+       console.log(e) 
+   }
+  }
+  loadPost()
+})
 
 // run -> on component mount(load/render)
 //.    -> depends on Dependancy array[](change in [])
@@ -28,7 +49,8 @@ setInterval(()=>{
     <>
     <div>
       <h1>useEffect</h1>
-      <button onClick={addData}>Add Data</button>
+        {/* <h1>{seconds}</h1> */}
+        {/* <button onClick={posts}>Click me</button> */}
     </div>
     </>
   )
